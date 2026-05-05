@@ -1,0 +1,21 @@
+name: Compile Dylib
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Compile with Clang
+        run: |
+          clang -dynamiclib -arch arm64 \
+          -isysroot $(xcrun --sdk iphoneos --show-sdk-path) \
+          -framework Foundation \
+          -o nosiri.dylib bypass.m
+          
+      - name: Upload Dylib Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nosiri-dylib
+          path: nosiri.dylib
